@@ -4,7 +4,7 @@ import pygame
 # 1. 게임 초기화 
 pygame.init()
 
-# ssdasdas
+
 # 2.게임창 옵션 설정
 size = [400, 900]
 screen = pygame.display.set_mode(size)
