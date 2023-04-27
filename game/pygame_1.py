@@ -1,5 +1,5 @@
 import pygame
-
+import random
 
 # 1. 게임 초기화 
 pygame.init()
@@ -43,7 +43,10 @@ ss.move = 5
 
 left_go = False
 right_go = False
+space_go = False
 
+m_list = []
+a_list = []
 
 
 black = (0,0,0)
@@ -63,19 +66,76 @@ while SB == 0 :
                 left_go = True
             elif event.key == pygame.K_RIGHT:
                 right_go = True 
+            elif event.key == pygame.K_SPACE:
+                space_go = True
+                k = 0
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
                 left_go = False    
             elif event.key == pygame.K_RIGHT:
                 right_go = False
+            elif event.key == pygame.K_SPACE:
+                space_go = False
     # 4 - 3 입력  시간에 따른 변화
     if left_go:
         ss.x -= ss.move
+        if ss.x <= 0:
+            ss.x = 0
     elif right_go:
         ss.x += ss.move
+        if ss.x >= size[0]-ss.sx:
+            ss.x = size[0]-ss.sx
+    
+    
+    if space_go == True and k % 6 == 0:
+        mm = obj()
+        mm.put_img('/Users/mac/Downloads/bullet.png')
+        mm.change_size(10, 20)
+        mm.x = round(ss.x + ss.sx/2 - mm.sx/2) 
+        mm.y = ss.y - mm.sy - 10
+        mm.move = 15
+        m_list.append(mm)
+    
+    k += 1
+    d_list = []
+    for i in range(len(m_list)):
+        m = m_list[i]
+        m.y -= m.move
+        if m.y <= -m.sy:
+            d_list.append(i)
+    
+    for d in d_list:
+        del m_list[d]
+
+
+    d_list = []
+    if random.random() > 0.98:
+        aa = obj()
+        aa.put_img('/Users/mac/Downloads/alien.png')
+        aa.change_size(40, 40)
+        aa.x = random.randrange(0, size[0] - aa.sx - round(ss.sx/2))
+        aa.y = 10  
+        aa.move = 1
+        a_list.append(aa)
+
+    for i in range(len(a_list)):
+        a = a_list[i]
+        a.y += a.move
+        if a.y >= size[1]:
+            d_list.append(i)
+    
+    for d in d_list:
+        del a_list[d]
+
+
+
     # 4 - 4 그리기 
     screen.fill(black)
     ss.show()
+    for m in m_list:
+        m.show()
+    for a in a_list:
+        a.show()
     # 4- 5 업데이트 
     pygame.display.flip()
 # 5 . 게임 종료
